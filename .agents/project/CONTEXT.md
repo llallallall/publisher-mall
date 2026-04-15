@@ -1,8 +1,12 @@
+### 프로젝트 컨텍스트 (Business Logic)
+### 위치: .agents/project/CONTEXT.md
+### 내용: "무엇을 만드는가?"에 대한 정보. (예: 출판사 쇼핑몰, PostgreSQL/Supabase 사용 결정 등 비즈니스 목표와 결합된 스택 정보)
+
 # Project Context: 출판사 모의고사 전문 쇼핑몰 (MVP)
 
 ## 1. 프로젝트 목적 및 범위
 - **목적**: 모의고사 교재 온라인 판매 및 학습 자료실/후기 관리 통합 [cite: 2026-04-15]
-- **기술 스택**: Nuxt 4 (NodeJS) + MySQL (PHP 배제, Nuxt 4 전격 적용) [cite: 2026-04-15]
+- **기술 스택**: Nuxt 4 (NodeJS) + PostgreSQL/Supabase (기존 MySQL에서 MVP 속도를 위해 변경) [cite: 2026-04-15]
 - **핵심 목표**: 300만 원 견적 내에서 5월 말까지 판매 가능한 핵심 기능(MVP) 구현 [cite: 2026-04-15]
 
 ## 2. 필수 기능 리스트 (MVP)

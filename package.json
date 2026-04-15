@@ -1,18 +1,17 @@
 {
-  "name": "publisher-mall",
-  "type": "module",
+  "name": "publisher-mall-root",
   "private": true,
+  "workspaces": [
+    "api",
+    "storefront"
+  ],
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "dev:api": "npm run dev --workspace=@publisher-mall/api",
+    "dev:storefront": "npm run dev --workspace=@publisher-mall/storefront",
+    "build:api": "npm run build --workspace=@publisher-mall/api",
+    "build:storefront": "npm run build --workspace=@publisher-mall/storefront"
   },
   "dependencies": {
-    "mysql2": "^3.22.0",
-    "nuxt": "^4.4.2",
-    "vue": "^3.5.32",
-    "vue-router": "^5.0.4"
+    "@supabase/supabase-js": "^2.103.1"
   }
 }

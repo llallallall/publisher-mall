@@ -1,0 +1,25 @@
+{
+  "name": "@publisher-mall/storefront",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/icon": "latest",
+    "@nuxt/image": "latest",
+    "@storefront-ui/vue": "latest",
+    "@tailwindcss/vite": "latest",
+    "@urql/vue": "^2.1.0",
+    "graphql": "^16.13.2",
+    "graphql-tag": "^2.12.6",
+    "nuxt": "^4.4.2",
+    "urql": "^5.0.2",
+    "vue": "^3.5.32",
+    "vue-router": "^5.0.4"
+  }
+}
