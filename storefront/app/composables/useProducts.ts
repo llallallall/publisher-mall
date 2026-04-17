@@ -14,9 +14,15 @@ export const useProducts = () => {
             preview
           }
           variants {
+            id
             price
             currencyCode
+            customFields {
+              productType
+              bundleComponentIds
+            }
           }
+
         }
         totalItems
       }

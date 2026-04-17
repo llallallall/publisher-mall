@@ -1,10 +1,17 @@
 <script setup lang="ts">
 const { products, loading, error } = useProducts()
+const { addItem, openCart } = useCart()
 
 // Currency formatter for academic elegance
 const formatPrice = (price?: number) => {
   if (price === undefined) return '문의'
   return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(price)
+}
+
+const handleAddToCart = async (variantId: string) => {
+  if (!variantId) return
+  await addItem(variantId, 1)
+  openCart()
 }
 </script>
 
@@ -54,7 +61,7 @@ const formatPrice = (price?: number) => {
 
       <!-- Loading State -->
       <div v-if="loading" class="grid grid-cols-1 md:grid-cols-3 gap-12">
-        <div v-for="i in 3" :key="i" class="basalt-card h-[500px] animate-pulse bg-slate-100/50"></div>
+        <div v-for="i in 3" :key="i" class="h-96 animate-pulse bg-slate-100/50 rounded-basalt"></div>
       </div>
 
       <!-- Error State -->
@@ -74,14 +81,28 @@ const formatPrice = (price?: number) => {
           :key="product.id"
           :title="product.name"
           :description="product.description"
-          :image="product.featuredAsset?.preview || 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6'"
+          :image="product.featuredAsset?.preview"
           badge="In-Stock"
         >
-          <div class="w-full flex items-center justify-between">
-            <span class="text-2xl font-black text-navy-900 tracking-tight">
-              {{ formatPrice(product.variants[0]?.price) }}
-            </span>
-            <CommonAppButton variant="primary" size="sm">구매하기</CommonAppButton>
+          <div class="space-y-8 flex-1 flex flex-col">
+            <div class="w-full flex items-center justify-between">
+              <span class="text-2xl font-black text-navy-900 tracking-tight">
+                {{ formatPrice(product.variants[0]?.price) }}
+              </span>
+              <CommonAppButton 
+                variant="primary" 
+                size="sm"
+                @click="handleAddToCart(product.variants[0]?.id)"
+              >
+                구매하기
+              </CommonAppButton>
+            </div>
+            
+            <!-- Bundle Details -->
+            <CommonCartBundlePreview 
+              v-if="product.variants[0]?.customFields?.productType === 'BUNDLE'"
+              :componentIdsString="product.variants[0]?.customFields?.bundleComponentIds"
+            />
           </div>
         </CommonAppCard>
       </div>

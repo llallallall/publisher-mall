@@ -1,55 +1,96 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* Academic Typography Sync */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&display=swap');
+/* 
+  Basalt Design System - Archival Index Aesthetic
+  - Typography: Instrument Serif (Headings), Inter (Body)
+  - Colors: Navy 900 (Foundation), Gold 400 (Accents)
+*/
+
+@theme {
+
+  --color-navy-50: #f8fafc;
+  --color-navy-100: #f1f5f9;
+  --color-navy-900: #0f172a;
+  --color-navy-950: #020617;
+  
+  --color-gold-400: #fbbf24;
+  --color-gold-500: #f59e0b;
+  --color-gold-600: #d97706;
+
+  --font-serif: "Instrument Serif", serif;
+  --font-sans: "Inter", sans-serif;
+
+  --radius-basalt: 2.5rem;
+  
+  --shadow-premium: 0 25px 50px -12px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 20px rgba(245, 158, 11, 0.2);
+}
 
 @layer base {
-  :root {
-    /* Basalt Navy Foundation */
-    --color-navy-50: #f1f5f9;
-    --color-navy-100: #e2e8f0;
-    --color-navy-800: #1e293b;
-    --color-navy-900: #0f172a;
-    --color-navy-950: #020617;
-
-    /* Blueprint Gold Accents */
-    --color-gold-400: #fbbf24;
-    --color-gold-500: #f59e0b;
-    --color-gold-600: #d97706;
-    
-    --radius-basalt: 2rem;
-    --font-heading: 'Playfair Display', serif;
-    --font-body: 'Inter', sans-serif;
+  html {
+    scroll-behavior: smooth;
   }
-
+  
   body {
-    @apply bg-slate-50 text-slate-900;
-    font-family: var(--font-body);
-    /* Subtle Blueprint Grid */
-    background-image: 
-      linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
-    background-size: 30px 30px;
+    @apply bg-white text-navy-900;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4 {
-    font-family: var(--font-heading);
-    @apply tracking-tight;
+    font-family: var(--font-serif);
+    @apply tracking-tight leading-[1.1];
   }
+
+  ::selection {
+    @apply bg-gold-400/30 text-navy-900;
+  }
+}
+
+/* Global Brand Transitions - Fluid & Dreamy */
+.page-enter-active,
+.page-leave-active,
+.layout-enter-active,
+.layout-leave-active {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.page-enter-from,
+.page-leave-to,
+.layout-enter-from,
+.layout-leave-to {
+  opacity: 0;
+  transform: translateY(10px) scale(0.99);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f8fafc; /* navy-50 */
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.1);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.3);
 }
 
 @layer components {
-  /* Basalt Curve Interface */
-  .basalt-card {
-    @apply rounded-[2rem] border border-slate-200 bg-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] transition-all duration-300 hover:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.15)] hover:-translate-y-1;
+
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-premium;
   }
 
-  .basalt-button {
-    @apply rounded-full px-8 py-3 bg-navy-900 text-white font-semibold transition-all duration-300 hover:bg-navy-800 active:scale-95 shadow-lg shadow-navy-900/10;
-  }
-
-  /* Academic Badge */
-  .academic-badge {
-    @apply px-3 py-1 bg-gold-500/10 text-gold-600 text-xs font-bold uppercase tracking-widest rounded-full border border-gold-500/20;
+  .blueprint-grid {
+    background-image: 
+      linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
 }
+

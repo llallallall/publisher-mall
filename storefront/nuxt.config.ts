@@ -19,7 +19,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiTarget: process.env.API_URL || 'http://localhost:3002',
+      apiTarget: 'http://localhost:4000',
+      url: 'http://localhost:4000/shop-api',
+
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseKey: process.env.SUPABASE_KEY,
     },

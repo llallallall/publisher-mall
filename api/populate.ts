@@ -1,4 +1,4 @@
-import { bootstrap, ProductService, ProductVariantService, RequestContextService, LanguageCode, ChannelService } from '@vendure/core';
+import { bootstrap, ProductService, ProductVariantService, RequestContextService, LanguageCode, ChannelService, ID } from '@vendure/core';
 import { config } from './vendure-config';
 
 async function runPopulate() {
@@ -34,6 +34,8 @@ async function runPopulate() {
         }
     ];
 
+    const createdVariants: Record<string, ID> = {};
+
     for (const p of sampleProducts) {
         try {
             const product = await productService.create(ctx, {
@@ -46,19 +48,55 @@ async function runPopulate() {
                 }],
             });
 
-            await variantService.create(ctx, [{
+            // Determine metadata
+            const isDigital = p.slug.includes('mp3') || p.slug === 'korean-pdf';
+            const isBundle = p.slug.includes('bundle');
+            const productType = isBundle ? 'BUNDLE' : (isDigital ? 'DIGITAL' : 'PHYSICAL');
+            
+            const digitalUrl = p.slug.includes('mp3') ? '/assets/english-listening-v1.mp3' : 
+                               p.slug === 'korean-pdf' ? '/assets/korean-mock-1.pdf' : undefined;
+
+            const variants = await variantService.create(ctx, [{
                 productId: product.id,
                 sku: p.slug.toUpperCase(),
                 price: p.price,
                 translations: [{ languageCode: LanguageCode.ko, name: 'Standard' }],
                 stockOnHand: 100,
                 trackInventory: true as any, 
-            }]);
-            console.log(`Created product: ${p.name}`);
+                customFields: {
+                    isDigital: isDigital,
+                    digitalMaterialUrl: digitalUrl,
+                    productType: productType,
+                }
+            }] as any);
+
+            const vId = (variants[0] as any).id;
+            createdVariants[p.slug] = vId;
+
+            console.log(`Created product: ${p.name} (Type: ${productType}, ID: ${vId})`);
         } catch (e: any) {
             console.log(`Skipping or failed to create ${p.name}: ${e.message}`);
         }
     }
+
+    // Post-process: Link bundle components
+    console.log('--- Linking Bundle Components ---');
+    if (createdVariants['2026-math-bundle']) {
+        // Mock components: Real physical book + digital PDF (we use some IDs from created list)
+        const componentIds = [
+            createdVariants['2026-korean-mock-1'], // Using this as physical component mock
+            createdVariants['english-listening-mp3'], // Using this as digital component mock
+        ].filter(Boolean);
+
+        await variantService.update(ctx, [{
+            id: createdVariants['2026-math-bundle'],
+            customFields: {
+                bundleComponentIds: JSON.stringify(componentIds),
+            }
+        }] as any);
+        console.log(`Linked math bundle to components: ${componentIds.join(', ')}`);
+    }
+
 
     console.log('--- Custom Population Finished ---');
     await app.close();
