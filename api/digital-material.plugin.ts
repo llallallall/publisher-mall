@@ -124,7 +124,10 @@ export class DigitalMaterialPlugin {
     }
 
     private async activateVariant(ctx: RequestContext, customer: Customer, variant: ProductVariant) {
+        console.log(`Checking activation for variant ${variant.id} (${variant.sku})`);
+        console.log(`Raw variant object:`, JSON.stringify(variant));
         const customFields = (variant as any).customFields;
+        console.log(`Custom Fields:`, JSON.stringify(customFields));
         if (!customFields) return;
 
         // 1. Direct Activation (Digital/Course)

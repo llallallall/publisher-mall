@@ -29,8 +29,8 @@ const { user, isAuthenticated } = useAuth()
           <!-- Cart Button -->
           <button @click="openCart" class="relative p-2 text-slate-600 hover:text-primary transition-colors group">
             <Icon name="ph:shopping-cart-simple-bold" class="text-2xl" />
-            <span v-if="cart?.totalItems" class="absolute top-0 right-0 w-5 h-5 bg-gold-500 text-[10px] text-white rounded-full flex items-center justify-center font-black animate-in zoom-in duration-300">
-              {{ cart.totalItems }}
+            <span v-if="cart?.totalQuantity" class="absolute top-0 right-0 w-5 h-5 bg-gold-500 text-[10px] text-white rounded-full flex items-center justify-center font-black animate-in zoom-in duration-300">
+              {{ cart.totalQuantity }}
             </span>
           </button>
           

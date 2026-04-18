@@ -13,5 +13,8 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.1"
+  },
+  "devDependencies": {
+    "@vendure/ui-devkit": "^3.6.2"
   }
 }

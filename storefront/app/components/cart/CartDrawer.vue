@@ -26,8 +26,8 @@ const formatPrice = (price: number) => {
             <h2 class="text-xl font-black text-navy-900 flex items-center space-x-2">
               <Icon name="ph:shopping-cart-bold" />
               <span>장바구니</span>
-              <span v-if="cart?.totalItems" class="ml-2 px-2 py-0.5 bg-navy-900 text-[10px] text-white rounded-full">
-                {{ cart.totalItems }}
+              <span v-if="cart?.totalQuantity" class="ml-2 px-2 py-0.5 bg-navy-900 text-[10px] text-white rounded-full">
+                {{ cart.totalQuantity }}
               </span>
             </h2>
             <button @click="closeCart" class="p-2 hover:bg-slate-50 rounded-full transition-colors">

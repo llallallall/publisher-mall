@@ -9,7 +9,7 @@ const GET_ACTIVE_ORDER = gql`
       state
       totalWithTax
       currencyCode
-      totalItems
+      totalQuantity
       lines {
         id
         productVariant {
@@ -34,7 +34,7 @@ const ADD_ITEM = gql`
     addItemToOrder(productVariantId: $variantId, quantity: $quantity) {
       ... on Order {
         id
-        totalItems
+        totalQuantity
       }
       ... on ErrorResult {
         errorCode
@@ -49,7 +49,7 @@ const ADJUST_LINE = gql`
     adjustOrderLine(orderLineId: $lineId, quantity: $quantity) {
       ... on Order {
         id
-        totalItems
+        totalQuantity
       }
       ... on ErrorResult {
         errorCode
@@ -64,7 +64,7 @@ const REMOVE_LINE = gql`
     removeOrderLine(orderLineId: $lineId) {
       ... on Order {
         id
-        totalItems
+        totalQuantity
       }
       ... on ErrorResult {
         errorCode

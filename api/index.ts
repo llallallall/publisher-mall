@@ -7,7 +7,7 @@ import { config } from './vendure-config';
 
 bootstrap(config)
     .then(() => {
-        console.log('Vendure server started successfully at http://localhost:3002/admin-api');
+        console.log(`Vendure server started successfully at http://localhost:${config.apiOptions.port}/admin-api`);
     })
     .catch(err => {
         console.error('Error starting Vendure server:', err);
