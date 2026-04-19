@@ -12,6 +12,7 @@
   "dependencies": {
     "@nuxt/icon": "latest",
     "@nuxt/image": "latest",
+    "@nuxtjs/supabase": "^2.0.5",
     "@storefront-ui/vue": "latest",
     "@tailwindcss/vite": "latest",
     "@urql/vue": "^2.1.0",
@@ -21,5 +22,8 @@
     "urql": "^5.0.2",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4"
+  },
+  "devDependencies": {
+    "@iconify-json/ph": "^1.2.2"
   }
 }

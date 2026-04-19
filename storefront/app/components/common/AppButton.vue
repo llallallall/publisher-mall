@@ -12,27 +12,27 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const variants = {
-  primary: 'bg-navy-900 text-white hover:bg-navy-950 shadow-premium hover:shadow-navy-900/20',
-  secondary: 'bg-gold-400 text-navy-950 hover:bg-gold-500 shadow-premium hover:shadow-gold-400/30',
-  outline: 'bg-transparent border border-navy-900/20 text-navy-900 hover:border-navy-900 hover:bg-navy-50/50',
-  ghost: 'bg-transparent text-slate-500 hover:bg-slate-50 hover:text-navy-900',
+  primary: 'bg-charcoal-900 text-white hover:bg-charcoal-950 shadow-md border border-charcoal-900',
+  secondary: 'bg-accent-soft backdrop-blur-[5.8px] text-charcoal-900 border border-charcoal-900/5 hover:bg-charcoal-900/5',
+  outline: 'bg-transparent border border-charcoal-900/10 text-charcoal-900 hover:border-charcoal-900 hover:bg-charcoal-50/50',
+  ghost: 'bg-transparent text-charcoal-400 hover:bg-charcoal-50 hover:text-charcoal-900',
 };
 
 const sizes = {
-  sm: 'px-6 py-2 text-[10px] font-black uppercase tracking-[0.2em]',
-  md: 'px-8 py-3 text-xs font-bold tracking-widest uppercase',
-  lg: 'px-12 py-5 text-sm font-black tracking-[0.25em] uppercase',
+  sm: 'px-6 py-2 text-[12px] font-semibold tracking-tight',
+  md: 'px-8 py-3 text-[14px] font-semibold tracking-tight',
+  lg: 'px-12 py-5 text-base font-semibold tracking-tight',
 };
 </script>
 
 <template>
   <button
-    class="relative inline-flex items-center justify-center transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) active:scale-[0.97] active:duration-100 disabled:opacity-40 disabled:cursor-not-allowed rounded-full group overflow-hidden"
+    class="relative inline-flex items-center justify-center transition-all duration-500 antigravity-ease active:scale-[0.96] disabled:opacity-40 disabled:cursor-not-allowed rounded-antigravity-pill group overflow-hidden whitespace-nowrap"
     :class="[variants[props.variant], sizes[props.size]]"
     :disabled="props.loading"
   >
-    <!-- Refined Hover Overlay -->
-    <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none" />
+    <!-- Light Reflection Overlay on hover -->
+    <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none" />
     
     <div class="relative z-10 flex items-center justify-center">
       <Icon 
@@ -45,3 +45,8 @@ const sizes = {
   </button>
 </template>
 
+<style scoped>
+.antigravity-ease {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+</style>

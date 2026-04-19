@@ -17,43 +17,43 @@ const formatPrice = (price: number) => {
     <Transition name="drawer">
       <div v-if="isCartOpen" class="fixed inset-0 z-[100]">
         <!-- Backdrop -->
-        <div class="absolute inset-0 bg-navy-900/40 backdrop-blur-sm" @click="closeCart"></div>
+        <div class="absolute inset-0 bg-charcoal-900/10 backdrop-blur-[6px]" @click="closeCart"></div>
         
         <!-- Panel -->
-        <div class="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden">
+        <div class="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white shadow-deep flex flex-col overflow-hidden border-l border-charcoal-900/5">
           <!-- Header -->
-          <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
-            <h2 class="text-xl font-black text-navy-900 flex items-center space-x-2">
-              <Icon name="ph:shopping-cart-bold" />
-              <span>장바구니</span>
-              <span v-if="cart?.totalQuantity" class="ml-2 px-2 py-0.5 bg-navy-900 text-[10px] text-white rounded-full">
+          <div class="p-6 border-b border-charcoal-900/5 flex justify-between items-center bg-white">
+            <h2 class="text-lg font-bold text-charcoal-900 flex items-center space-x-2 uppercase tracking-tighter">
+              <Icon name="ph:shopping-bag-bold" />
+              <span>Cart</span>
+              <span v-if="cart?.totalQuantity" class="ml-2 px-2 py-0.5 bg-charcoal-900 text-[10px] text-white rounded-full">
                 {{ cart.totalQuantity }}
               </span>
             </h2>
-            <button @click="closeCart" class="p-2 hover:bg-slate-50 rounded-full transition-colors">
-              <Icon name="ph:x-bold" class="text-xl text-slate-400" />
+            <button @click="closeCart" class="p-2 hover:bg-charcoal-50 rounded-full transition-colors text-slate-400 hover:text-charcoal-900">
+              <Icon name="ph:x-bold" class="text-lg" />
             </button>
           </div>
 
           <!-- List -->
           <div class="flex-grow overflow-y-auto px-6 bg-white">
-            <div v-if="cart?.lines?.length" class="divide-y divide-slate-50">
+            <div v-if="cart?.lines?.length" class="divide-y divide-charcoal-900/5">
               <CartItem v-for="line in cart.lines" :key="line.id" :line="line" />
             </div>
-            <div v-else class="h-full flex flex-col items-center justify-center text-center py-20 opacity-30 select-none">
-              <Icon name="ph:shopping-cart-light" class="text-6xl mb-4" />
-              <p class="text-sm font-medium">장바구니가 비어 있습니다.</p>
+            <div v-else class="h-full flex flex-col items-center justify-center text-center py-20 opacity-20 select-none">
+              <Icon name="ph:shopping-bag-light" class="text-6xl mb-4" />
+              <p class="text-sm font-medium tracking-tight">Your archive is empty.</p>
             </div>
           </div>
 
           <!-- Footer -->
-          <div v-if="cart?.lines?.length" class="p-8 bg-slate-50 border-t border-slate-100 space-y-6">
-            <div class="flex justify-between items-end">
-              <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total</span>
-              <span class="text-2xl font-black text-navy-900">{{ formatPrice(cart.totalWithTax) }}</span>
+          <div v-if="cart?.lines?.length" class="p-8 bg-charcoal-50 border-t border-charcoal-900/5 space-y-6">
+            <div class="flex justify-between items-baseline">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Total</span>
+              <span class="text-2xl font-bold text-charcoal-900 tracking-tighter">{{ formatPrice(cart.totalWithTax) }}</span>
             </div>
             <CommonAppButton variant="primary" size="lg" class="w-full h-14" @click="handleCheckout">
-              결제하기
+              Checkout
             </CommonAppButton>
           </div>
         </div>

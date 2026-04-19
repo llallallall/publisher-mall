@@ -1,0 +1,16 @@
+
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@vendure/core": ["node_modules/@vendure/core"]
+    }
+  }
+}

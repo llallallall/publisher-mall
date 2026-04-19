@@ -18,17 +18,22 @@ const componentIds = computed(() => {
 </script>
 
 <template>
-  <div v-if="componentIds.length > 0" class="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-3">
-    <div class="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-      <Icon name="ph:package-bold" />
-      <span>Bundle Components</span>
+  <div v-if="componentIds.length > 0" class="space-y-6">
+    <div class="flex items-center space-x-3 text-[11px] font-bold uppercase tracking-widest text-charcoal-900 opacity-30">
+      <Icon name="ph:package-fill" />
+      <span>Included Archive Components</span>
     </div>
-    <ul class="space-y-2">
-      <li v-for="id in componentIds" :key="id" class="flex items-center space-x-2 text-xs text-slate-600 font-medium">
-        <span class="w-1.5 h-1.5 rounded-full bg-gold-400"></span>
-        <span>Included Component (ID: {{ id }})</span>
+    <ul class="space-y-4">
+      <li v-for="id in componentIds" :key="id" class="flex items-center space-x-4 p-4 bg-charcoal-50 rounded-xl border border-charcoal-900/5 transition-all hover:border-charcoal-900/10">
+        <div class="w-2 h-2 rounded-full bg-safety-orange"></div>
+        <div class="flex flex-col">
+          <span class="text-[13px] font-bold text-charcoal-900">Academic Component (ID: {{ id }})</span>
+          <span class="text-[10px] text-slate-400 font-medium">Verified Scholarly Material</span>
+        </div>
       </li>
     </ul>
-    <p class="text-[9px] text-slate-400 italic">※ 번들 상품은 디지털 자료와 실물 도서가 결합된 상품입니다.</p>
+    <p class="text-[10px] text-slate-400 italic bg-white p-4 rounded-xl border border-charcoal-900/5">
+      ※ 본 패키지는 학술적 완결성을 위해 선별된 디지털 자료와 교재의 결합 상품입니다.
+    </p>
   </div>
 </template>

@@ -1,0 +1,42 @@
+- **내용**: 자료실(LibraryPlugin) 및 후기 시스템(ReviewPlugin) 구현 완료
+- **이유**: RFP 필수 기능(부가 자료 제공, 후기 관리) 및 고객 페인 포인트(트래픽 전이 전략) 반영
+- **작업 상세**:
+  - `LibraryPlugin`: 연구 자료/등급컷 관리, 로그인 기반 다운로드 권한 제어 구현
+  - `ReviewPlugin`: 평점/후기 관리, 외부 플랫폼 후기 대량 임포트(Import) 기능 구현
+  - Storefront: `/library`, `/products` 인덱스 페이지 및 상품 상세 후기 탭 연동
+  - `populate.ts`: 초기 자료실 데이터 및 수학 번들 후기 마이그레이션 데이터 세팅
+  - Nuxt 4 URQL SSR 안정성 강화 (vue auto-import 명시적 처리)
+- **[2026-04-19]**: 상품 미노출 버그(hydration 및 가격 필드 에러) 해결 완료
+  - **내용**: Storefront 상품 SSR 동기화 및 DB 오류 수정
+  - **이유**: `useQuery` SSR 불가 현상 및 누락 데이터(가격 없는 variant) 충돌
+  - **작업 상세**: `useAsyncData` 및 `$fetch` 기반 조회 로직으로 개편, Corrupt Data Hard-delete.
+- **[2026-04-19]**: 커뮤니티 및 고객센터 메뉴/라우팅 전면 개편
+  - **내용**: `yigam.co.kr` 구조 벤치마킹을 반영하여 소통실 및 고객센터 메뉴 구성 완료.
+  - **이유**: 기존 "전략 상담실"의 불명확한 사용성을 "고객센터"로 변경 및 구체화.
+  - **작업 상세**: `default.vue`의 GNB 및 푸터 맵핑 갱신. `/support` 산하 `faq.vue`, `inquiry.vue`, `report.vue` 생성 및 빈 상태 레이아웃 폴리싱. `/community` 산하 공지/이벤트 페이지 UI 일관성 정비 반영 및 안 쓰는 페이지 정리.
+- **[2026-04-19]**: 메뉴 고도화 및 고객 세부 지시사항 반영 (2차)
+  - **내용**: 고객센터, 소통실, 학습자료실 3계층 메뉴 완비 및 메인 페이지 퀵링크 동기화
+  - **이유**: `yigam.co.kr` 및 교육 특화 플랫폼 표준(무료/회원전용 라벨링 등) 적용
+  - **작업 상세**: 
+    - `community/expert.vue`, `community/board.vue` 신규 화면 개발
+    - `library/analysis.vue`, `answers.vue`, `video.vue`, `files.vue` 신규 개설 및 [무료/회원전용] 뱃지 UI 추가
+    - `pages/index.vue` GNB Quick Links(`quickLinks`) 목적지 라우트 재설정 (`/community/notice` -> `/support/notice` 등)
+- **[2026-04-19]**: 상품 상세페이지 UI 깨짐 수정 (플로팅 메뉴 겹침 이슈)
+  - **내용**: `products/[slug].vue` 전면 리팩토링. 플로팅/스티키 요소가 헤더를 가리는 문제 해결.
+  - **이유**: z-index 충돌(콘텐츠 z-20 vs GNB z-50), sticky top 값 불일치(탭바 top-[80px] vs 실제 헤더 164px), 과도한 여백.
+  - **작업 상세**:
+    - 불필요한 z-index(z-10, z-20, z-40) 전면 제거 및 탭바 z-30으로 정리
+    - sticky 이미지 `top-[180px]`으로 헤더 높이(유틸바+메인+서브메뉴) 반영
+    - sticky 탭바 `top-0`으로 변경 (스크롤 시 뷰포트 최상단 고정)
+    - 수량 선택 UI 및 총 금액 표시 추가
+    - 배송정보/교환반품 탭 실질 콘텐츠 작성
+    - 전체 레이아웃을 max-w-[1200px] 기반으로 통일
+- **[2026-04-19]**: RFP 기반 프로젝트 전면 폴리싱 및 'Solid Serenity' 디자인 고도화
+  - **내용**: 메인, 상품상세, 자료실, 체크아웃 페이지의 UI/UX를 프리미엄 수준으로 개선.
+  - **이유**: RFP 요구사항(전문적인 분위기, 자료실/후기 관리 강조) 및 'Solid Serenity' 브랜드 아이덴티티 강화.
+  - **작업 상세**:
+    - `index.vue`: 히어로 섹션 비주얼 임팩트 강화 및 퀵링크 레이아웃 정돈.
+    - `products/[slug].vue`: 후기 탭 고속화 및 평점 요약 UI/외부 소스 표시 추가.
+    - `library/analysis.vue`: useLibrary 연동 및 회원전용/무료 자료 구분 UI 명확화.
+    - `checkout.vue`: 영문 텍스트 한글화 및 결제 정보 카드 디자인 개선.
+    - `useLibrary.ts`: 카테고리 필터링이 가능하도록 쿼리 변수 로직 수정.

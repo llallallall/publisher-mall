@@ -1,0 +1,60 @@
+
+> dev:storefront
+> npm run dev --workspace=@publisher-mall/storefront
+
+
+> dev
+> nuxt dev
+
+│
+●  Nuxt 4.4.2 (with Nitro 2.13.3, Vite 7.3.2 and Vue 3.5.32)
+
+  ➜ Local:    http://localhost:3001/
+  ➜ Network:  use --host to expose
+
+  ➜ DevTools: press Shift + Option + D in the browser (v3.2.4)
+
+ℹ Nuxt Icon server bundle mode is set to local
+
+ WARN  Duplicated imports "useAppConfig", the one from "nitropack/runtime/internal/config" has been ignored and "/Users/devowlscorp/Projects/nuxt/publisher-mall/node_modules/@nuxt/nitro-server/dist/runtime/utils/app-config" is used
+
+
+ WARN  Duplicated imports "useAppConfig", the one from "nitropack/runtime/internal/config" has been ignored and "/Users/devowlscorp/Projects/nuxt/publisher-mall/node_modules/@nuxt/nitro-server/dist/runtime/utils/app-config" is used
+
+
+[@nuxt/supabase]  WARN  Database types configured at "~/types/database.types.ts" but file not found at "/Users/devowlscorp/Projects/nuxt/publisher-mall/storefront/app/types/database.types.ts". Using "Database = unknown".
+
+✔ Vite client built in 17ms
+✔ Vite server built in 16ms
+
+ WARN  Duplicated imports "useAppConfig", the one from "nitropack/runtime/internal/config" has been ignored and "/Users/devowlscorp/Projects/nuxt/publisher-mall/node_modules/@nuxt/nitro-server/dist/runtime/utils/app-config" is used
+
+
+ WARN  Duplicated imports "useAppConfig", the one from "nitropack/runtime/internal/config" has been ignored and "/Users/devowlscorp/Projects/nuxt/publisher-mall/node_modules/@nuxt/nitro-server/dist/runtime/utils/app-config" is used
+
+[nitro] ✔ Nuxt Nitro server built in 424ms
+ℹ Vite client warmed up in 2ms
+ℹ nuxt.config.ts updated. Restarting Nuxt...
+  ➜ DevTools: press Shift + Option + D in the browser (v3.2.4)
+
+ℹ Nuxt Icon server bundle mode is set to local
+
+ WARN  Duplicated imports "useAppConfig", the one from "nitropack/runtime/internal/config" has been ignored and "/Users/devowlscorp/Projects/nuxt/publisher-mall/node_modules/@nuxt/nitro-server/dist/runtime/utils/app-config" is used
+
+
+ WARN  Duplicated imports "useAppConfig", the one from "nitropack/runtime/internal/config" has been ignored and "/Users/devowlscorp/Projects/nuxt/publisher-mall/node_modules/@nuxt/nitro-server/dist/runtime/utils/app-config" is used
+
+
+[@nuxt/supabase]  WARN  Database types configured at "~/types/database.types.ts" but file not found at "/Users/devowlscorp/Projects/nuxt/publisher-mall/storefront/app/types/database.types.ts". Using "Database = unknown".
+
+✔ Vite client built in 7ms
+✔ Vite server built in 8ms
+
+ WARN  Duplicated imports "useAppConfig", the one from "nitropack/runtime/internal/config" has been ignored and "/Users/devowlscorp/Projects/nuxt/publisher-mall/node_modules/@nuxt/nitro-server/dist/runtime/utils/app-config" is used
+
+
+ WARN  Duplicated imports "useAppConfig", the one from "nitropack/runtime/internal/config" has been ignored and "/Users/devowlscorp/Projects/nuxt/publisher-mall/node_modules/@nuxt/nitro-server/dist/runtime/utils/app-config" is used
+
+[nitro] ✔ Nuxt Nitro server built in 262ms
+ℹ Vite server warmed up in 0ms
+ℹ Vite client warmed up in 0ms

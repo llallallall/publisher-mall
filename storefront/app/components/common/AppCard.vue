@@ -4,50 +4,66 @@ interface Props {
   description?: string;
   image?: string;
   badge?: string;
+  hover?: boolean;
+  glass?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  hover: true,
+  glass: true,
+});
 </script>
 
 <template>
-  <div class="relative group rounded-basalt bg-white border border-slate-100 shadow-premium transition-all duration-700 cubic-bezier(0.25, 1, 0.5, 1) hover:shadow-[0_40px_80px_-20px_rgba(15,23,42,0.12)] hover:-translate-y-3 overflow-hidden flex flex-col h-full">
-    
-    <!-- Image Layer with Perspective Warp simulation -->
-    <div v-if="props.image" class="aspect-[16/10] w-full overflow-hidden bg-navy-50 relative">
-      <NuxtImg
-        :src="props.image"
-        class="h-full w-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
-        alt="Product Image"
+  <div
+    class="relative rounded-[32px] border border-charcoal-900/5 transition-all duration-700 antigravity-ease overflow-hidden flex flex-col h-full bg-white"
+    :class="[
+      props.glass ? 'bg-white/85 backdrop-blur-[14.65px] shadow-premium' : 'shadow-premium',
+      props.hover ? 'hover:shadow-deep hover:-translate-y-2 hover:border-accent-blue/10' : ''
+    ]"
+  >
+    <!-- Background Blueprint Hint (Very subtle) -->
+    <div v-if="props.glass" class="absolute inset-0 opacity-[0.01] blueprint-grid pointer-events-none"></div>
+
+    <!-- Image Section -->
+    <div v-if="props.image" class="relative w-full aspect-[16/10] overflow-hidden bg-charcoal-50">
+       <img 
+        :src="props.image" 
+        :alt="props.title" 
+        class="w-full h-full object-cover transition-transform duration-700 antigravity-ease group-hover:scale-110"
       />
-      <!-- Glass Badge Overlay -->
-      <div v-if="props.badge" class="absolute top-6 left-6 z-10">
-        <span class="px-4 py-1.5 bg-white/80 backdrop-blur-md rounded-full text-[10px] font-black text-navy-900 uppercase tracking-[0.2em] shadow-sm border border-white/50">
+      <div v-if="props.badge" class="absolute top-4 left-4">
+        <span class="px-3 py-1 bg-charcoal-900/80 backdrop-blur-md text-[10px] font-bold text-white uppercase tracking-widest rounded-full">
           {{ props.badge }}
         </span>
       </div>
-      
-      <!-- Hover Overlay Glow -->
-      <div class="absolute inset-0 bg-gradient-to-t from-navy-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
     </div>
-    
-    <!-- Content Area -->
-    <div class="p-10 flex-1 flex flex-col">
-      <slot name="header">
-        <h3 v-if="props.title" class="text-3xl font-serif text-navy-900 mb-4 tracking-tight group-hover:text-gold-600 transition-colors duration-500">
+
+    <div class="relative z-10 p-8 flex-1 flex flex-col">
+      <div v-if="props.title || props.description" class="mb-6 space-y-2">
+        <h3 v-if="props.title" class="text-2xl font-semibold tracking-tight text-charcoal-900">
           {{ props.title }}
         </h3>
-        <p v-if="props.description" class="text-sm text-slate-400 mb-8 line-clamp-2 leading-relaxed font-light">
+        <p v-if="props.description" class="text-sm text-slate-500 line-clamp-2 font-light leading-relaxed">
           {{ props.description }}
         </p>
-      </slot>
+      </div>
       
-      <div class="mt-auto pt-8 border-t border-slate-50 flex items-center justify-between">
+      <div class="flex-1">
         <slot />
       </div>
     </div>
-    
-    <!-- Subtle Bottom Accent -->
-    <div class="absolute bottom-0 left-0 h-1.5 w-0 bg-gold-400 transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) group-hover:w-full" />
   </div>
 </template>
 
+<style scoped>
+.antigravity-ease {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+.blueprint-grid {
+  background-image: 
+    linear-gradient(rgba(18, 19, 23, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18, 19, 23, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+</style>

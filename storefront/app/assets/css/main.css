@@ -1,30 +1,34 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* 
-  Basalt Design System - Archival Index Aesthetic
-  - Typography: Instrument Serif (Headings), Inter (Body)
-  - Colors: Navy 900 (Foundation), Gold 400 (Accents)
+  Antigravity Design System - Premium Minimalist & Glassmorphism
+  Reference: https://antigravity.google/use-cases/fullstack
 */
 
 @theme {
-
-  --color-navy-50: #f8fafc;
-  --color-navy-100: #f1f5f9;
-  --color-navy-900: #0f172a;
-  --color-navy-950: #020617;
+  /* DNA: Solid Serenity Colors */
+  --color-charcoal-50: #F8FAFC;
+  --color-charcoal-400: #64748B;
+  --color-charcoal-900: #0F172A; /* Deep Navy - Authority */
+  --color-charcoal-950: #020617;
   
-  --color-gold-400: #fbbf24;
-  --color-gold-500: #f59e0b;
-  --color-gold-600: #d97706;
-
-  --font-serif: "Instrument Serif", serif;
-  --font-sans: "Inter", sans-serif;
-
-  --radius-basalt: 2.5rem;
+  --color-bg-base: #F8FAFC;
+  --color-accent-blue: #0F172A;  /* Primary Action */
+  --color-safety-orange: #F97316; /* Point CTA */
+  --color-accent-soft: rgba(15, 23, 42, 0.05);
+  --color-accent-glass: rgba(15, 23, 42, 0.03);
+  --color-charcoal-100: #f1f5f9;
   
-  --shadow-premium: 0 25px 50px -12px rgba(15, 23, 42, 0.08);
-  --shadow-glow: 0 0 20px rgba(245, 158, 11, 0.2);
+  --font-sans: "Pretendard", "Inter", -apple-system, sans-serif;
+
+  --radius-antigravity-card: 24px;
+  --radius-antigravity-pill: 9999px;
+  
+  --shadow-premium: 0 10px 40px rgba(15, 23, 42, 0.08);
+  --shadow-deep: 0 24px 64px rgba(15, 23, 42, 0.12);
+
+  --transition-antigravity: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
@@ -33,28 +37,28 @@
   }
   
   body {
-    @apply bg-white text-navy-900;
+    @apply bg-bg-base text-charcoal-900;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.015em;
   }
 
   h1, h2, h3, h4 {
-    font-family: var(--font-serif);
-    @apply tracking-tight leading-[1.1];
+    @apply font-bold tracking-tight text-charcoal-900;
+    letter-spacing: -0.04em;
   }
 
   ::selection {
-    @apply bg-gold-400/30 text-navy-900;
+    @apply bg-safety-orange/10 text-safety-orange;
   }
 }
 
-/* Global Brand Transitions - Fluid & Dreamy */
+/* Page Transitions */
 .page-enter-active,
 .page-leave-active,
 .layout-enter-active,
 .layout-leave-active {
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.6s var(--transition-antigravity);
 }
 
 .page-enter-from,
@@ -62,35 +66,42 @@
 .layout-enter-from,
 .layout-leave-to {
   opacity: 0;
-  transform: translateY(10px) scale(0.99);
+  transform: translateY(12px);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #f8fafc; /* navy-50 */
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(15, 23, 42, 0.1);
+  background: rgba(18, 19, 23, 0.1);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(15, 23, 42, 0.3);
+  background: rgba(18, 19, 23, 0.2);
 }
 
 @layer components {
-
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-premium;
+    @apply bg-white/85 backdrop-blur-[14.65px] border border-charcoal-900/5 shadow-premium;
   }
 
   .blueprint-grid {
     background-image: 
-      linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(18, 19, 23, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(18, 19, 23, 0.03) 1px, transparent 1px);
     background-size: 40px 40px;
   }
-}
+  
+  .btn-glass {
+    @apply bg-accent-soft backdrop-blur-[5.8px] border border-charcoal-900/5 text-charcoal-900;
+  }
 
+  .hover-lift {
+    @apply transition-transform duration-500 hover:-translate-y-1;
+    transition-timing-function: var(--transition-antigravity);
+  }
+}

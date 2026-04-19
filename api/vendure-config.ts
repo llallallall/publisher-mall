@@ -7,142 +7,128 @@ import {
 import { defaultEmailHandlers, EmailPlugin } from '@vendure/email-plugin';
 import { AssetServerPlugin } from '@vendure/asset-server-plugin';
 import { AdminUiPlugin } from '@vendure/admin-ui-plugin';
-
+import { compileUiExtensions } from '@vendure/ui-devkit/compiler';
 import path from 'path';
-import dotenv from 'dotenv';
+import 'dotenv/config';
+
+import { SupabaseAuthStrategy } from './supabase-auth-strategy';
 import { DigitalMaterialPlugin } from './digital-material.plugin';
-import { portonePaymentHandler } from './portone.payment-handler';
+import { LibraryPlugin } from './library.plugin';
+import { ReviewPlugin } from './review.plugin';
+import { NotificationPlugin } from './notification.plugin';
+import { MarketingPlugin } from './marketing.plugin';
 import { PortonePlugin } from './portone.plugin';
-
-// Load .env from root directory
-
-dotenv.config({ path: path.join(__dirname, '../.env') });
-
-/** * [주의] v3.6.x 환경의 Node16 모드에서는 
- * 일반적인 import가 타입을 찾지 못하는 경우가 많습니다. 
- * 아래와 같이 require를 사용하여 컴파일러를 직접 가져오는 것이 
- * MVP 개발 속도를 높이는 실전 팁입니다.
- */
-const { compileUiExtensions } = require('@vendure/ui-devkit/compiler');
+import { portonePaymentHandler } from './portone.payment-handler';
 
 export const config: VendureConfig = {
-    customFields: {
-        ProductVariant: [
-            {
-                name: 'digitalMaterialUrl',
-                type: 'string',
-                public: true,
-                label: [{ languageCode: LanguageCode.ko, value: '디지털 자료 URL' }]
-            },
-            {
-                name: 'isDigital',
-                type: 'boolean',
-                public: true,
-                defaultValue: false,
-                label: [{ languageCode: LanguageCode.ko, value: '디지털 상품 여부' }]
-            },
-            {
-                name: 'productType',
-                type: 'string',
-                public: true,
-                defaultValue: 'PHYSICAL',
-                options: [
-                    { value: 'PHYSICAL', label: [{ languageCode: LanguageCode.ko, value: '실물 도서' }] },
-                    { value: 'DIGITAL', label: [{ languageCode: LanguageCode.ko, value: '디지털 자료' }] },
-                    { value: 'BUNDLE', label: [{ languageCode: LanguageCode.ko, value: '번들 상품' }] },
-                ],
-            },
-            {
-                name: 'bundleComponentIds',
-                type: 'string',
-                public: true,
-                label: [{ languageCode: LanguageCode.ko, value: '번들 구성품 IDs (JSON)' }]
-            },
-        ],
-    },
-
-
     apiOptions: {
         port: 4000,
         adminApiPath: 'admin-api',
         shopApiPath: 'shop-api',
-        // For development, we allow all origins. 
-        // In production (Vercel), this should be narrowed.
         cors: {
-            origin: ['http://localhost:5000'],
+            origin: ['http://localhost:3001', 'http://localhost:4000', 'http://localhost:4200'],
             credentials: true,
         },
-
-
+        adminApiPlayground: {
+            settings: { 'request.credentials': 'include' } as any,
+        },
+        adminApiDebug: true,
+        shopApiPlayground: {
+            settings: { 'request.credentials': 'include' } as any,
+        },
+        shopApiDebug: true,
     },
     authOptions: {
         tokenMethod: ['bearer', 'cookie'],
         superadminCredentials: {
-            identifier: 'admin',
-            password: 'admin',
+            identifier: process.env.VENDURE_SUPERADMIN_IDENTIFIER || 'superadmin',
+            password: process.env.VENDURE_SUPERADMIN_PASSWORD || 'superadmin',
         },
-        cookieOptions: {
-            secret: process.env.SUPABASE_SERVICE_ROLE_KEY || 'shhh-secret',
-        },
+        shopAuthenticationStrategy: [new SupabaseAuthStrategy()],
     },
     dbConnectionOptions: {
         type: 'postgres',
         synchronize: true,
         logging: false,
+        database: process.env.DB_NAME,
         host: process.env.DB_HOST,
-        port: Number(process.env.DB_PORT) || 5432,
+        port: Number(process.env.DB_PORT),
         username: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-        ssl: { rejectUnauthorized: false },
     },
     paymentOptions: {
-        paymentMethodHandlers: [portonePaymentHandler], // Portone handler registered
+        paymentMethodHandlers: [portonePaymentHandler],
     },
-
+    customFields: {
+        Product: [
+            { name: 'productType', type: 'string', defaultValue: 'DIGITAL', options: [
+                { value: 'DIGITAL' },
+                { value: 'PHYSICAL' },
+                { value: 'SERVICE' },
+                { value: 'BUNDLE' }
+            ]},
+            { name: 'targetGrade', type: 'string', defaultValue: '고3/N수', options: [
+                { value: '고3/N수' },
+                { value: '고2' },
+                { value: '고1' },
+                { value: '공통' }
+            ]},
+            { name: 'materialType', type: 'string', defaultValue: '문서', options: [
+                { value: '문서' },
+                { value: '음성' },
+                { value: '영상' },
+                { value: '일반' }
+            ]},
+        ],
+        ProductVariant: [
+            { name: 'fileUrl', type: 'string', public: false },
+            { name: 'digitalMaterialUrl', type: 'string', public: true },
+            { name: 'productType', type: 'string', defaultValue: 'DIGITAL', options: [
+                { value: 'DIGITAL' },
+                { value: 'PHYSICAL' },
+                { value: 'SERVICE' },
+                { value: 'BUNDLE' }
+            ]},
+            { name: 'bundleComponentIds', type: 'string', public: true },
+        ],
+    },
     plugins: [
         AssetServerPlugin.init({
             route: 'assets',
             assetUploadDir: path.join(__dirname, 'static/assets'),
-            // Default naming and storage strategies are used if not specified
+            assetUrlPrefix: `${process.env.VENDURE_URL || 'http://localhost:4000'}/assets/`,
         }),
-        DefaultJobQueuePlugin.init({ useDatabaseForBuffer: true }),
-        DefaultSearchPlugin.init({}), // Options are required in v3
+        DefaultJobQueuePlugin.init({  }),
+        DefaultSearchPlugin.init({ bufferUpdates: false, indexStockStatus: true }),
         EmailPlugin.init({
-            route: 'mailbox',
             devMode: true,
             outputPath: path.join(__dirname, 'static/email/test-emails'),
+            route: 'mailbox',
             handlers: defaultEmailHandlers,
             templatePath: path.join(__dirname, 'static/email/templates'),
             globalTemplateVars: {
                 fromAddress: 'noreply@publisher-mall.com',
-                fromName: 'Publisher Mall',
+                contactUrl: 'http://localhost:3001/contact',
             },
         }),
-        AdminUiPlugin.init({
-            route: 'admin',
-            port: 3003,
-            adminUiConfig: {
-                defaultLanguage: LanguageCode.ko,
-                availableLanguages: [LanguageCode.ko, LanguageCode.en],
-            },
-            app: compileUiExtensions({
-                // 현재 api 폴더 상위의 publisher-mall 루트에 __admin-ui 생성 [cite: 2026-04-18]
-                outputPath: path.join(__dirname, '../__admin-ui'),
-                extensions: [
-                    {
-                        translations: {
-                            // api 폴더 내 같은 레벨의 ko.json 참조 [cite: 2026-04-18]
-                            ko: path.join(__dirname, 'ko.json'),
-                        },
-                    },
-                ],
-                devMode: true,
+        /* Only include AdminUiPlugin if NOT in populate mode
+        ...(process.env.VENDURE_POPULATE === 'true' ? [] : [
+            AdminUiPlugin.init({
+                route: 'admin',
+                port: 4200,
+                adminUiConfig: {
+                    defaultLanguage: LanguageCode.ko,
+                    availableLanguages: [LanguageCode.ko, LanguageCode.en],
+                },
+                
             }),
-        }),
+        ]), 
+        */
         DigitalMaterialPlugin.init(),
+        LibraryPlugin,
+        ReviewPlugin,
+        NotificationPlugin,
+        MarketingPlugin,
         PortonePlugin,
     ],
 };
-
-

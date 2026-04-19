@@ -1,5 +1,6 @@
 import { useQuery } from '@urql/vue';
 import { gql } from 'graphql-tag';
+import { computed } from 'vue';
 
 export const useMyMaterials = () => {
   const GET_MY_MATERIALS = gql`
@@ -16,10 +17,8 @@ export const useMyMaterials = () => {
                     preview
                 }
             }
-            customFields {
-                digitalMaterialUrl
-            }
         }
+        downloadUrl
       }
     }
   `;

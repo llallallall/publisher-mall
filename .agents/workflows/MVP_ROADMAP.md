@@ -9,23 +9,24 @@
 - [x] **Storefront Engine**: Nuxt 4 (compatibility mode), Tailwind v4, URQL 정밀 연동
 
 ## Phase 2. Premium Design & UI/UX (Completed) ✅
-- [x] **Design Tokens**: `Basalt Navy & Gold` 컬러 시스템, `Playfair Display` 타이포그래피 정립
-- [x] **Archival Layout**: 기록 보관소(Index) 컨셉의 웅장한 히어로 섹션 및 정제된 그리드 구현
-- [x] **Premium Components**: Basalt Curve 철학이 반영된 `AppCard`, `AppButton` 고도화
+- [x] **Design Tokens**: `Antigravity Charcoal & Blue` 프리미엄 시스템 정립 (Lucid Depth 적용)
+- [x] **Archival Layout**: 기록 보관소(Index) 컨셉의 미니멀리즘 히어로 섹션 및 정제된 그리드 구현
+- [x] **Premium Components**: Antigravity 명세가 반영된 `AppCard`, `AppButton` 고도화 완료
 - [x] **Data Binding**: 백엔드 상용 데이터(국/수/영 모의고사) 실시간 바인딩 완료
 
-## Phase 3. Digital-Physical Bundle Logic (Next Priority) 🏗️
-- [ ] **Asset Mapping System**: 실물 도서 구매 시 디지털(PDF, MP3) 자료 자동 권한 부여 로직
-- [ ] **Bundle Pricing Strategy**: 복합 상품에 대한 할인 및 카트 처리 엔진 구현
-- [ ] **Digital Locker**: 구매자 전용 고성능 파일 다운로드 센터(Archive) 구축
+## Phase 3. Digital-Physical Bundle Logic (Completed) ✅
+- [x] **Asset Mapping System**: 실물 도서 구매 시 디지털(PDF, MP3) 자료 자동 권한 부여 로직
+- [x] **Bundle Pricing Strategy**: 복합 상품에 대한 할인 계산 엔진(Regular vs Bundle) 및 API 확장 완료
+- [x] **Digital Locker**: 구매자 전용 고성능 파일 다운로드 센터(Archive) 구축 완료
 
-## Phase 4. Payment & Order Fulfillment 💳
-- [ ] **Portone Gateway**: 국내 신용카드 및 페이 연동 (포트원 SDK 기반)
-- [ ] **Checkout Optimization**: 주소 검색, 배송 정보 입력, 최종 주문 요약 화면 정밀화
-- [ ] **Post-Purchase Flow**: 결제 완료 후 카카오 알림톡/메일링 연동 및 자료 즉시 제공 서비스
+## Phase 4. Payment & Order Fulfillment (In Progress) 🏗️
+- [x] **Portone Gateway**: 국내 신용카드 및 페이 연동 연동 완료
+- [x] **Checkout Optimization**: 주소 검색, 배송 정보 입력, 최종 주문 요약 및 인증 연동 완료
+- [x] **Post-Purchase Flow**: 결제 완료 후 카카오 알림톡/메일링 자동 트리거 시뮬레이션 구현 완료
 
-## Phase 5. Identity & Security 🔐
-- [ ] **Supabase Auth Linkage**: 소셜 로그인 시스템과 Vendure Customer 레코드 자동 매핑
+## Phase 5. Identity & Security ✅
+- [x] **Supabase Auth Linkage**: 소셜 로그인 시스템과 Vendure Customer 레코드 자동 매핑 완료
+- [x] **Identity Bridge**: Supabase JWT를 기반으로 한 하이브리드 인증 전략(Strategy) 구축 완료
 - [ ] **Rate Limiting**: API 요청 속도 제어 및 보안 강화
 - [ ] **Admin Automation**: 대규모 상품군 관리를 위한 Vendure Admin UI 대시보드 커스텀
 

@@ -27,6 +27,21 @@ const LOGIN = gql`
   }
 `;
 
+const AUTHENTICATE = gql`
+  mutation Authenticate($input: AuthenticationInput!) {
+    authenticate(input: $input) {
+      ... on CurrentUser {
+        id
+        identifier
+      }
+      ... on ErrorResult {
+        errorCode
+        message
+      }
+    }
+  }
+`;
+
 const LOGOUT = gql`
   mutation Logout {
     logout {
@@ -56,6 +71,7 @@ export const useAuth = () => {
   });
 
   const { executeMutation: loginMutation } = useMutation(LOGIN);
+  const { executeMutation: authenticateMutation } = useMutation(AUTHENTICATE);
   const { executeMutation: logoutMutation } = useMutation(LOGOUT);
   const { executeMutation: registerMutation } = useMutation(REGISTER);
 
@@ -71,6 +87,18 @@ export const useAuth = () => {
     login: async (username: string, password: string) => {
       const result = await loginMutation({ username, password });
       if (result.data?.login?.id) {
+        await executeQuery({ requestPolicy: 'network-only' });
+      }
+      return result;
+    },
+
+    authenticateWithSupabase: async (token: string) => {
+      const result = await authenticateMutation({
+        input: {
+          supabase: { token }
+        }
+      });
+      if (result.data?.authenticate?.id) {
         await executeQuery({ requestPolicy: 'network-only' });
       }
       return result;

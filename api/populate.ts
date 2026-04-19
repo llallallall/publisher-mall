@@ -1,5 +1,7 @@
 import { bootstrap, ProductService, ProductVariantService, RequestContextService, LanguageCode, ChannelService, ID } from '@vendure/core';
 import { config } from './vendure-config';
+import { LibraryService } from './library.plugin';
+import { ReviewService } from './review.plugin';
 
 async function runPopulate() {
     const app = await bootstrap(config);
@@ -7,6 +9,8 @@ async function runPopulate() {
     const variantService = app.get(ProductVariantService);
     const ctxService = app.get(RequestContextService);
     const channelService = app.get(ChannelService);
+    const libraryService = app.get(LibraryService);
+    const reviewService = app.get(ReviewService);
 
     // Get default channel and context
     const ctx = await ctxService.create({ apiType: 'admin' });
@@ -95,6 +99,56 @@ async function runPopulate() {
             }
         }] as any);
         console.log(`Linked math bundle to components: ${componentIds.join(', ')}`);
+    }
+
+    // 1. Populate Library Materials
+    console.log('--- Populating Library ---');
+    const libraryItems = [
+        {
+            title: '2026학년도 6월 모의평가 등급컷 (예상)',
+            description: 'Lucid Archive 연구소에서 분석한 6월 모의평가 영역별 예상 등급컷 자료입니다. 가입 후 확인 가능합니다.',
+            fileUrl: '/assets/grading-6-mock.pdf',
+            requireLogin: true,
+            isPublic: true
+        },
+        {
+            title: '모의고사 학습 가이드: 상위 1%의 비결',
+            description: '효율적인 오답 노트 작성법과 시험 시간 관리 전략이 담긴 무료 가이드입니다.',
+            fileUrl: '/assets/study-guide.pdf',
+            requireLogin: false,
+            isPublic: true
+        }
+    ];
+    for (const item of libraryItems) {
+        await libraryService.create(ctx, item);
+        console.log(`Created library item: ${item.title}`);
+    }
+
+    // 2. Populate Reviews (Imported)
+    console.log('--- Importing Reviews ---');
+    const mathBundleId = createdVariants['2026-math-bundle'];
+    if (mathBundleId) {
+        // Need to get the actual Product ID from the Variant
+        const variant = await variantService.findOne(ctx, mathBundleId, ['product']);
+        const productId = (variant as any).product.id;
+
+        await reviewService.import(ctx, [
+            {
+                productId,
+                authorName: '박지용',
+                rating: 5,
+                body: '교보문고에서 사고 정답지만 여기서 받으려다 아예 갈아탔습니다. 구성이 알차네요.',
+                source: 'Kyobo'
+            },
+            {
+                productId,
+                authorName: 'Lucid-Master',
+                rating: 5,
+                body: '국내 최고 수준의 퀄리티입니다. 해설지가 정말 꼼꼼해서 학원 안 가도 될 수준이에요.',
+                source: 'External'
+            }
+        ]);
+        console.log(`Imported reviews for product: ${productId}`);
     }
 
 

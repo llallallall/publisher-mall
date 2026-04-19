@@ -2,28 +2,29 @@ import { defineNuxtConfig } from 'nuxt/config'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  // Nuxt 4 Compatibility Mode
-  ssr: false, // 디버깅을 위해 일시적으로 SSR 비활성화
+  ssr: true, // Re-enabled after fixing imports
   future: {
     compatibilityVersion: 4,
   },
 
   compatibilityDate: '2025-07-15',
 
-  // Directory naming convention: Nuxt 4 uses 'app' as srcDir by default
-  // srcDir: 'app', // This is default when compatibilityVersion: 4 is set
-
   devtools: { enabled: true },
+  
+  devServer: {
+    port: 3001,
+  },
 
   css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
     public: {
-      apiTarget: 'http://localhost:4000',
-      url: 'http://localhost:4000/shop-api',
+      apiTarget: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:4000',
+      url: `${process.env.NUXT_PUBLIC_API_URL || 'http://localhost:4000'}/shop-api`,
 
-      supabaseUrl: process.env.SUPABASE_URL,
-      supabaseKey: process.env.SUPABASE_KEY,
+      supabaseUrl: process.env.SUPABASE_URL || 'https://tafnisicdywxbmwlyumd.supabase.co',
+      supabaseKey: process.env.SUPABASE_KEY || 'sb_publishable_El3aut-x-LsA_2eUZDmIaw_NI-h1cuE',
+      storefrontUrl: process.env.NUXT_PUBLIC_STOREFRONT_URL || 'http://localhost:3001',
     },
   },
 
@@ -31,17 +32,29 @@ export default defineNuxtConfig({
     plugins: [
       tailwindcss(),
     ],
+    // Stability fix: Increase build timeout
+    build: {
+      chunkSizeWarningLimit: 1000,
+    }
   },
 
   modules: [
     '@nuxt/image',
-    '@nuxt/icon', // Only use icon module for efficiency
+    '@nuxt/icon',
+    '@nuxtjs/supabase',
   ],
 
-  // Theme configuration (Basalt Navy/Gold)
+  supabase: {
+    redirect: false,
+    url: process.env.SUPABASE_URL || 'https://tafnisicdywxbmwlyumd.supabase.co',
+    key: process.env.SUPABASE_KEY || 'sb_publishable_El3aut-x-LsA_2eUZDmIaw_NI-h1cuE',
+  },
+
   app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
+    layoutTransition: { name: 'layout', mode: 'out-in' },
     head: {
-      title: 'Publisher Mall - Academic Authority',
+      title: 'Archive. - Academic Integrity',
       meta: [
         { name: 'description', content: 'Premium Education Publisher Mall' }
       ]
