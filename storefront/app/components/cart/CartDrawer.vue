@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { cart, isCartOpen, closeCart } = useCart()
+const { cart, isCartOpen, closeCart, loading } = useCart()
 const router = useRouter()
 
 const handleCheckout = () => {
@@ -36,11 +36,16 @@ const formatPrice = (price: number) => {
           </div>
 
           <!-- List -->
-          <div class="flex-grow overflow-y-auto px-6 bg-white">
+          <div class="flex-grow overflow-y-auto px-6 bg-white relative">
+            <!-- Loading Overlay -->
+            <div v-if="loading && !cart" class="absolute inset-0 flex items-center justify-center bg-white z-10 transition-opacity">
+              <Icon name="ph:spinner-gap-bold" class="text-3xl text-charcoal-400 animate-spin" />
+            </div>
+
             <div v-if="cart?.lines?.length" class="divide-y divide-charcoal-900/5">
               <CartItem v-for="line in cart.lines" :key="line.id" :line="line" />
             </div>
-            <div v-else class="h-full flex flex-col items-center justify-center text-center py-20 opacity-20 select-none">
+            <div v-else-if="!loading" class="h-full flex flex-col items-center justify-center text-center py-20 opacity-20 select-none">
               <Icon name="ph:shopping-bag-light" class="text-6xl mb-4" />
               <p class="text-sm font-medium tracking-tight">Your archive is empty.</p>
             </div>

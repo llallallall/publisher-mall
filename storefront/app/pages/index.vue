@@ -20,8 +20,8 @@ const quickLinks = [
 
 useSeoMeta({
   title: '서담 (書湛) :: 지혜로운 책을 깊게 담다',
-  ogTitle: '서담 (書湛) :: 프리미엄 학문 아카이브',
-  description: '단순한 서점을 넘어선 지혜의 창고, 서담. 서담의 노하우가 집약된 독보적인 국어 학습 콘텐츠와 디지털 자료를 제공합니다.',
+  ogTitle: '서담 (書湛) :: 프리미엄 학습 아카이브',
+  description: '단순한 서점을 넘어선 지적 탐구의 공간, 서담. 서담의 정교한 분석과 노하우가 집약된 국어 학습 콘텐츠를 제공합니다.',
 })
 </script>
 
@@ -39,16 +39,16 @@ useSeoMeta({
         <div class="space-y-10">
           <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
             <span class="w-1.5 h-1.5 rounded-full bg-safety-orange animate-pulse"></span>
-            <span class="text-[11px] font-black text-white/50 uppercase tracking-[0.2em]">Premium Academic Archive</span>
+            <span class="text-[11px] font-black text-white/50 uppercase tracking-[0.2em]">Seodam Premium Archive</span>
           </div>
           <h1 class="text-5xl md:text-7xl font-black text-white leading-[1.05] tracking-tighter">
             지혜를 담는<br />
-            깊고 푸른 창고,<br />
+            깊고 푸른 저장소,<br />
             <span class="text-safety-orange">서담 (書湛)</span>
           </h1>
           <p class="text-[16px] md:text-[19px] text-white/40 font-medium leading-relaxed max-w-lg">
-            단순한 도서 판매를 넘어, 지식의 깊이를 더하는 아카이브 시스템.<br class="hidden md:block" />
-            서담의 엄선된 국어 학습 콘텐츠를 만나보세요.
+            도서 판매를 넘어, 지식의 깊이를 보존하는 서담만의 가치.<br class="hidden md:block" />
+            엄선된 국어 학습 콘텐츠와 프리미엄 자료를 서담에서 만나보세요.
           </p>
           <div class="flex flex-wrap items-center gap-5 pt-4">
             <NuxtLink to="/products" class="h-16 px-10 flex items-center bg-white text-charcoal-900 rounded-2xl font-black text-[16px] hover:bg-safety-orange transition-all duration-300 transform hover:-translate-y-1 shadow-xl shadow-white/5">
@@ -101,7 +101,7 @@ useSeoMeta({
     <section class="mx-auto max-w-[1200px] px-4 py-32">
       <div class="flex items-end justify-between mb-16 px-2">
         <div>
-          <h2 class="text-4xl font-black text-charcoal-900 tracking-tighter mb-4">Best Archive.</h2>
+          <h2 class="text-4xl font-black text-charcoal-900 tracking-tighter mb-4">서담 베스트 자료</h2>
           <p class="text-[15px] text-gray-400 font-medium">수험생들이 가장 많이 찾는 서담의 시그니처 콘텐츠</p>
         </div>
         <NuxtLink to="/products" class="group flex items-center gap-2 text-[14px] font-bold text-gray-400 hover:text-charcoal-900 transition-colors">
@@ -164,7 +164,7 @@ useSeoMeta({
         <div class="grid md:grid-cols-2 gap-8">
           <div v-for="i in 2" :key="i" class="group p-10 bg-white/5 border border-white/10 rounded-[2.5rem] hover:bg-white/10 hover:border-white/20 transition-all duration-500 flex flex-col md:flex-row gap-8">
             <div class="w-24 h-24 bg-white/5 rounded-2xl flex-shrink-0 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform">
-              <Icon name="ph:article-black-bold" class="text-3xl text-white/20" />
+              <Icon name="ph:article-bold" class="text-3xl text-white/20" />
             </div>
             <div class="space-y-4">
               <div class="flex items-center gap-2">

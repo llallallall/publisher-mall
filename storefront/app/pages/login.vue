@@ -1,6 +1,9 @@
 <script setup lang="ts">
 const { authenticateWithSupabase } = useAuth()
 const router = useRouter()
+const route = useRoute()
+
+// Nuxt Supabase Auto-imports
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 
@@ -9,7 +12,30 @@ const error = ref('')
 const isSubmitting = ref(false)
 const isOtpSent = ref(false)
 
-// Handle traditional social login (Google/Kakao)
+// OTP 인증 메일 발송 (가입/로그인 통합)
+const handleEmailLogin = async () => {
+  if (!email.value) return
+  isSubmitting.value = true
+  error.value = ''
+  
+  try {
+    const { error: authError } = await supabase.auth.signInWithOtp({
+      email: email.value,
+      options: {
+        emailRedirectTo: window.location.origin + '/login-callback',
+        shouldCreateUser: true
+      }
+    })
+    if (authError) throw authError
+    isOtpSent.value = true
+  } catch (e: any) {
+    error.value = e.message || '인증 메일 발송 실패'
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+// 소셜 로그인 (Google/Kakao)
 const handleSocialLogin = async (provider: 'google' | 'kakao') => {
   error.value = ''
   try {
@@ -21,42 +47,19 @@ const handleSocialLogin = async (provider: 'google' | 'kakao') => {
     })
     if (authError) throw authError
   } catch (e: any) {
-    error.value = e.message || 'Social login failed'
+    error.value = e.message || '소셜 로그인 실패'
   }
 }
 
-// Handle Magic Link / OTP login
-const handleEmailLogin = async () => {
-  if (!email.value) return
-  isSubmitting.value = true
-  error.value = ''
-  
-  try {
-    const { error: authError } = await supabase.auth.signInWithOtp({
-      email: email.value,
-      options: {
-        emailRedirectTo: window.location.origin + '/login-callback'
-      }
-    })
-    if (authError) throw authError
-    isOtpSent.value = true
-  } catch (e: any) {
-    error.value = e.message || 'OTP request failed'
-  } finally {
-    isSubmitting.value = false
-  }
-}
-
-// Watch for Supabase user change and bridge to Vendure
+// Supabase 유저 변화 감지 후 Vendure 동기화
 watch(user, async (newUser) => {
   if (newUser?.email) {
     const { data: { session } } = await supabase.auth.getSession()
     if (session?.access_token) {
       const result = await authenticateWithSupabase(session.access_token)
       if (result.data?.authenticate?.id) {
-        router.push('/')
-      } else {
-        error.value = 'Failed to sync with store profile'
+        const redirectPath = route.query.redirect as string || '/'
+        router.push(redirectPath)
       }
     }
   }
@@ -68,76 +71,74 @@ watch(user, async (newUser) => {
     <div class="w-full max-w-md space-y-10">
       <!-- Header -->
       <div class="text-center space-y-4">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-charcoal-900 rounded-2xl shadow-premium mb-2">
-          <Icon name="ph:lock-key-bold" class="text-2xl text-white" />
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-charcoal-900 rounded-2xl shadow-premium mx-auto mb-2">
+          <Icon name="ph:paper-plane-tilt-fill" class="text-2xl text-white" />
         </div>
-        <h1 class="text-4xl font-semibold text-charcoal-900 tracking-tight">Identity Access</h1>
-        <p class="text-slate-400 font-light text-sm">Professional archive entry for academic excellence.</p>
+        <h1 class="text-4xl font-black text-charcoal-900 tracking-tighter">이메일 로그인</h1>
+        <p class="text-gray-400 font-medium text-[15px]">비밀번호 없이 이메일 인증 링크로 안전하게 로그인하세요.</p>
       </div>
 
       <!-- Main Login Surface -->
-      <div class="glass-panel p-10 rounded-antigravity-card space-y-8">
-        <div v-if="!isOtpSent" class="space-y-8">
-          <!-- Email Login -->
-          <div class="space-y-4">
-            <div class="space-y-1.5 px-1">
-              <label class="text-[11px] font-bold uppercase tracking-tight text-slate-400 ml-1">Archive Email</label>
+      <div class="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] space-y-10">
+        <div v-if="!isOtpSent" class="space-y-10">
+          <!-- Integrated Form -->
+          <div class="space-y-6">
+            <div class="space-y-2">
+              <label class="text-[12px] font-black uppercase tracking-widest text-gray-400">이메일 주소</label>
               <input 
                 v-model="email"
                 type="email" 
-                class="w-full h-14 px-5 bg-charcoal-900/5 border-0 rounded-2xl focus:ring-1 focus:ring-charcoal-900/20 focus:bg-white transition-all text-charcoal-900 font-medium placeholder:text-slate-300 outline-none"
-                placeholder="name@university.ac.kr"
+                required
+                class="w-full h-15 px-6 bg-charcoal-50 border border-transparent rounded-2xl focus:border-safety-orange focus:bg-white transition-all text-charcoal-900 font-bold placeholder:text-gray-300 outline-none"
+                placeholder="example@email.com"
               />
+              <p class="text-[11px] text-gray-400 ml-1">계정이 없으면 자동으로 생성됩니다.</p>
             </div>
 
-            <CommonAppButton 
-              variant="primary" 
-              size="lg" 
-              class="w-full h-14"
+            <button 
+              class="w-full h-15 bg-charcoal-900 text-white rounded-2xl font-black text-[16px] flex items-center justify-center gap-3 hover:bg-safety-orange transition-all duration-300 shadow-xl shadow-charcoal-900/10"
               :disabled="isSubmitting"
               @click="handleEmailLogin"
             >
-              <Icon v-if="isSubmitting" name="ph:spinner-gap-bold" class="animate-spin mr-2" />
-              <span v-else>Send Magic Link</span>
-            </CommonAppButton>
+              <Icon v-if="isSubmitting" name="ph:spinner-gap-bold" class="animate-spin text-xl" />
+              <span v-else>인증 메일 보내기</span>
+            </button>
           </div>
 
           <div class="relative">
-            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-charcoal-900/5"></div></div>
-            <div class="relative flex justify-center text-[10px] uppercase tracking-widest text-slate-300"><span class="bg-white/60 px-4 backdrop-blur-sm">Social Gateway</span></div>
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+            <div class="relative flex justify-center text-[11px] font-black uppercase tracking-widest text-gray-300"><span class="bg-white px-4">소셜 계정 인증</span></div>
           </div>
 
           <!-- Social Buttons -->
           <div class="grid grid-cols-2 gap-4">
             <button 
               @click="handleSocialLogin('google')"
-              class="h-14 flex items-center justify-center bg-white border border-charcoal-900/5 rounded-2xl hover:bg-charcoal-900/5 transition-all shadow-sm group"
+              class="h-15 flex items-center justify-center bg-white border border-gray-100 rounded-2xl hover:border-gray-200 transition-all shadow-sm group"
             >
-              <Icon name="logos:google-icon" class="text-lg opacity-40 group-hover:opacity-100 transition-opacity" />
+              <Icon name="logos:google-icon" class="text-xl" />
             </button>
             <button 
               @click="handleSocialLogin('kakao')"
-              class="h-14 flex items-center justify-center bg-[#FEE500] rounded-2xl hover:brightness-95 transition-all shadow-sm group"
+              class="h-15 flex items-center justify-center bg-[#FEE500] rounded-2xl hover:brightness-95 transition-all shadow-sm group"
             >
-              <Icon name="ri:kakao-talk-fill" class="text-2xl text-[#3C1E1E] opacity-40 group-hover:opacity-100 transition-opacity" />
+              <Icon name="ri:kakao-talk-fill" class="text-3xl text-[#3C1E1E]" />
             </button>
           </div>
         </div>
 
         <!-- OTP Sent State -->
-        <div v-else class="text-center space-y-6 py-4">
-          <div class="w-16 h-16 bg-accent-blue/10 text-accent-blue rounded-full flex items-center justify-center mx-auto">
-            <Icon name="ph:envelope-simple-open-bold" class="text-2xl" />
+        <div v-else class="text-center space-y-6 py-6">
+          <div class="w-20 h-20 bg-safety-orange/10 text-safety-orange rounded-full flex items-center justify-center mx-auto mb-4">
+            <Icon name="ph:envelope-open-fill" class="text-3xl" />
           </div>
           <div class="space-y-2">
-            <h2 class="text-xl font-semibold text-charcoal-900">Check your inbox</h2>
-            <p class="text-sm text-slate-500 leading-relaxed">
-              We've sent a magic link to <span class="font-medium text-charcoal-900">{{ email }}</span>.
+            <h2 class="text-2xl font-black text-charcoal-900 tracking-tight">메일함을 확인해 주세요!</h2>
+            <p class="text-[15px] text-gray-500 leading-relaxed">
+              <span class="font-bold text-charcoal-900">{{ email }}</span> 주소로<br />인증 링크를 발송했습니다.
             </p>
           </div>
-          <CommonAppButton variant="outline" size="sm" @click="isOtpSent = false">
-            Trying another email
-          </CommonAppButton>
+          <button @click="isOtpSent = false" class="text-[14px] font-bold text-gray-400 underline underline-offset-4">다른 이메일 사용하기</button>
         </div>
 
         <!-- Error Message -->
@@ -155,8 +156,8 @@ watch(user, async (newUser) => {
 
       <!-- Footer Policy -->
       <div class="text-center">
-        <p class="text-[11px] text-slate-400 font-medium tracking-tight">
-          By entering, you agree to our <a href="#" class="text-charcoal-900 hover:underline">Terms of Discovery</a> and <a href="#" class="text-charcoal-900 hover:underline">Intellectual Policy</a>.
+        <p class="text-[12px] text-gray-400 font-bold tracking-tight">
+          로그인 시 서담의 <a href="#" class="text-charcoal-900 underline underline-offset-4">이용약관</a> 및 <a href="#" class="text-charcoal-900 underline underline-offset-4">개인정보처리방침</a>에 동의하게 됩니다.
         </p>
       </div>
     </div>
@@ -164,11 +165,7 @@ watch(user, async (newUser) => {
 </template>
 
 <style scoped>
-.glass-panel {
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(14.65px);
-  -webkit-backdrop-filter: blur(14.65px);
-  border: 1px solid rgba(18, 19, 23, 0.05);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+.shadow-premium {
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
 }
 </style>

@@ -21,6 +21,12 @@
   },
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "ui"
+  ],
+  "include": [
+    "index.ts",
+    "vendure-config.ts",
+    "**/*.plugin.ts"
   ]
 }

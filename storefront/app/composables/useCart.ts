@@ -15,7 +15,11 @@ const GET_ACTIVE_ORDER = gql`
         productVariant {
           id
           name
+          featuredAsset {
+            preview
+          }
           product {
+            name
             featuredAsset {
               preview
             }
@@ -112,7 +116,8 @@ export const useCart = () => {
     
     addItem: async (variantId: string, quantity: number = 1) => {
       const result = await addItemMutation({ variantId, quantity });
-      await executeQuery();
+      // 갱신은 백그라운드에서 수행하여 UI 차단 최소화
+      executeQuery({ requestPolicy: 'network-only' });
       return result;
     },
     adjustQuantity: async (lineId: string, quantity: number) => {

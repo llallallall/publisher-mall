@@ -2,7 +2,7 @@ import { useQuery, useMutation } from '@urql/vue';
 import { gql } from 'graphql-tag';
 import { computed, watchEffect } from 'vue';
 
-export const useReviews = (productId: string) => {
+export const useReviews = (productId: MaybeRefOrGetter<string>) => {
   const query = gql`
     query GetProductReviews($productId: ID!, $skip: Int, $take: Int) {
       productReviews(productId: $productId, skip: $skip, take: $take) {
@@ -30,7 +30,11 @@ export const useReviews = (productId: string) => {
 
   const { data, fetching, executeQuery, error } = useQuery({
     query,
-    variables: { productId, skip: 0, take: 10 }
+    variables: computed(() => ({ 
+      productId: toValue(productId), 
+      skip: 0, 
+      take: 10 
+    }))
   });
 
   watchEffect(() => {

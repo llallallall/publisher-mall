@@ -17,6 +17,14 @@ const handleDecrease = () => {
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(price)
 }
+
+const displayName = computed(() => {
+  const vName = props.line.productVariant.name
+  const pName = props.line.productVariant.product?.name
+  // 'Standard' 이거나 이름이 없는 경우 상품명을 우선 표시
+  if (!vName || vName === 'Standard' || vName === 'Default') return pName || vName
+  return vName
+})
 </script>
 
 <template>
@@ -24,7 +32,7 @@ const formatPrice = (price: number) => {
     <!-- Image -->
     <div class="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
       <img 
-        :src="line.productVariant.featuredAsset?.preview" 
+        :src="line.productVariant.featuredAsset?.preview || line.productVariant.product?.featuredAsset?.preview" 
         :alt="line.productVariant.name"
         class="w-full h-full object-cover"
       />
@@ -32,7 +40,9 @@ const formatPrice = (price: number) => {
 
     <!-- Info -->
     <div class="flex-grow">
-      <h4 class="text-sm font-bold text-navy-900 line-clamp-1">{{ line.productVariant.name }}</h4>
+      <h4 class="text-sm font-bold text-navy-900 line-clamp-1">
+        {{ displayName }}
+      </h4>
       <p class="text-[10px] text-slate-400 font-mono">{{ formatPrice(line.linePriceWithTax / line.quantity) }}</p>
       
       <!-- Quantity Controls -->

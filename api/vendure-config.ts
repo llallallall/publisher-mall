@@ -3,6 +3,7 @@ import {
     DefaultSearchPlugin,
     VendureConfig,
     LanguageCode,
+    CurrencyCode,
 } from '@vendure/core';
 import { defaultEmailHandlers, EmailPlugin } from '@vendure/email-plugin';
 import { AssetServerPlugin } from '@vendure/asset-server-plugin';
@@ -14,7 +15,7 @@ import 'dotenv/config';
 import { SupabaseAuthStrategy } from './supabase-auth-strategy';
 import { DigitalMaterialPlugin } from './digital-material.plugin';
 import { LibraryPlugin } from './library.plugin';
-import { ReviewPlugin } from './review.plugin';
+import { SeodamReviewsPlugin } from './src/plugins/reviews/reviews.plugin';
 import { NotificationPlugin } from './notification.plugin';
 import { MarketingPlugin } from './marketing.plugin';
 import { PortonePlugin } from './portone.plugin';
@@ -22,7 +23,7 @@ import { portonePaymentHandler } from './portone.payment-handler';
 
 export const config: VendureConfig = {
     apiOptions: {
-        port: 4000,
+        port: +(process.env.PORT || 4000),
         adminApiPath: 'admin-api',
         shopApiPath: 'shop-api',
         cors: {
@@ -61,34 +62,42 @@ export const config: VendureConfig = {
     },
     customFields: {
         Product: [
-            { name: 'productType', type: 'string', defaultValue: 'DIGITAL', options: [
-                { value: 'DIGITAL' },
-                { value: 'PHYSICAL' },
-                { value: 'SERVICE' },
-                { value: 'BUNDLE' }
-            ]},
-            { name: 'targetGrade', type: 'string', defaultValue: '고3/N수', options: [
-                { value: '고3/N수' },
-                { value: '고2' },
-                { value: '고1' },
-                { value: '공통' }
-            ]},
-            { name: 'materialType', type: 'string', defaultValue: '문서', options: [
-                { value: '문서' },
-                { value: '음성' },
-                { value: '영상' },
-                { value: '일반' }
-            ]},
+            {
+                name: 'productType', type: 'string', defaultValue: 'DIGITAL', options: [
+                    { value: 'DIGITAL' },
+                    { value: 'PHYSICAL' },
+                    { value: 'SERVICE' },
+                    { value: 'BUNDLE' }
+                ]
+            },
+            {
+                name: 'targetGrade', type: 'string', defaultValue: '고3/N수', options: [
+                    { value: '고3/N수' },
+                    { value: '고2' },
+                    { value: '고1' },
+                    { value: '공통' }
+                ]
+            },
+            {
+                name: 'materialType', type: 'string', defaultValue: '문서', options: [
+                    { value: '문서' },
+                    { value: '음성' },
+                    { value: '영상' },
+                    { value: '일반' }
+                ]
+            },
         ],
         ProductVariant: [
             { name: 'fileUrl', type: 'string', public: false },
             { name: 'digitalMaterialUrl', type: 'string', public: true },
-            { name: 'productType', type: 'string', defaultValue: 'DIGITAL', options: [
-                { value: 'DIGITAL' },
-                { value: 'PHYSICAL' },
-                { value: 'SERVICE' },
-                { value: 'BUNDLE' }
-            ]},
+            {
+                name: 'productType', type: 'string', defaultValue: 'DIGITAL', options: [
+                    { value: 'DIGITAL' },
+                    { value: 'PHYSICAL' },
+                    { value: 'SERVICE' },
+                    { value: 'BUNDLE' }
+                ]
+            },
             { name: 'bundleComponentIds', type: 'string', public: true },
         ],
     },
@@ -98,7 +107,7 @@ export const config: VendureConfig = {
             assetUploadDir: path.join(__dirname, 'static/assets'),
             assetUrlPrefix: `${process.env.VENDURE_URL || 'http://localhost:4000'}/assets/`,
         }),
-        DefaultJobQueuePlugin.init({  }),
+        DefaultJobQueuePlugin.init({}),
         DefaultSearchPlugin.init({ bufferUpdates: false, indexStockStatus: true }),
         EmailPlugin.init({
             devMode: true,
@@ -111,22 +120,40 @@ export const config: VendureConfig = {
                 contactUrl: 'http://localhost:3001/contact',
             },
         }),
-        /* Only include AdminUiPlugin if NOT in populate mode
-        ...(process.env.VENDURE_POPULATE === 'true' ? [] : [
-            AdminUiPlugin.init({
-                route: 'admin',
-                port: 4200,
-                adminUiConfig: {
-                    defaultLanguage: LanguageCode.ko,
-                    availableLanguages: [LanguageCode.ko, LanguageCode.en],
-                },
-                
+        AdminUiPlugin.init({
+            route: 'admin',
+            port: +(process.env.ADMIN_PORT || 3003),
+            app: compileUiExtensions({
+                outputPath: path.join(__dirname, 'compiled-admin-ui'),
+                extensions: [
+                    {
+                        id: 'product-reviews',
+                        extensionPath: path.join(__dirname, '..', 'admin-ui-extensions', 'reviews-ui'),
+                        translations: {
+                            ko: path.join(__dirname, 'ko.json'),
+                        },
+                        ngModules: [
+                            {
+                                type: 'lazy' as const,
+                                route: 'product-reviews',
+                                ngModuleFileName: 'reviews-ui.module.ts',
+                                ngModuleName: 'ReviewsUiModule',
+                            },
+                        ],
+                    },
+                ],
+                devMode: true,
             }),
-        ]), 
-        */
+            adminUiConfig: {
+                defaultLanguage: LanguageCode.ko,
+                availableLanguages: [LanguageCode.ko, LanguageCode.en],
+                brand: '서담 - 관리자',
+                hideVendureBranding: true,
+            },
+        }),
         DigitalMaterialPlugin.init(),
         LibraryPlugin,
-        ReviewPlugin,
+        SeodamReviewsPlugin,
         NotificationPlugin,
         MarketingPlugin,
         PortonePlugin,

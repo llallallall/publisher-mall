@@ -2,7 +2,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  ssr: true, // Re-enabled after fixing imports
+  ssr: true,
   future: {
     compatibilityVersion: 4,
   },
@@ -28,11 +28,17 @@ export default defineNuxtConfig({
     },
   },
 
+  build: {
+    transpile: ['@supabase/ssr'],
+  },
+
   vite: {
     plugins: [
       tailwindcss(),
     ],
-    // Stability fix: Increase build timeout
+    optimizeDeps: {
+      include: ['cookie', 'graphql-tag'],
+    },
     build: {
       chunkSizeWarningLimit: 1000,
     }
@@ -54,9 +60,9 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' },
     head: {
-      title: 'Archive. - Academic Integrity',
+      title: '서담 - 프리미엄 학습자료 아카이브',
       meta: [
-        { name: 'description', content: 'Premium Education Publisher Mall' }
+        { name: 'description', content: '한 차원 높은 학습 경험, 서담에서 제공하는 프리미엄 교육 자료를 만나보세요.' }
       ]
     }
   }

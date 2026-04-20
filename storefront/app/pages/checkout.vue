@@ -5,13 +5,13 @@ const { payWithPortone } = usePayment()
 const router = useRouter()
 
 const isProcessing = ref(false)
+const showLoginModal = ref(false)
 const errorMessage = ref('')
 
 const handlePayment = async () => {
   if (!cart.value) return
   if (!isAuthenticated.value) {
-    errorMessage.value = '결제를 위해 로그인이 필요합니다.'
-    router.push('/login?redirect=/checkout')
+    showLoginModal.value = true
     return
   }
   
@@ -43,6 +43,13 @@ const handlePayment = async () => {
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(price)
+}
+
+const getDisplayName = (line: any) => {
+  const vName = line.productVariant.name
+  const pName = line.productVariant.product?.name
+  if (!vName || vName === 'Standard' || vName === 'Default') return pName || vName
+  return vName
 }
 </script>
 
@@ -100,7 +107,7 @@ const formatPrice = (price: number) => {
                     <div v-else class="w-full h-full flex items-center justify-center"><Icon name="ph:book-light" class="text-2xl text-gray-200" /></div>
                   </div>
                   <div class="flex-1 flex flex-col justify-center">
-                    <h4 class="font-bold text-charcoal-900 text-[16px] mb-1 leading-tight">{{ line.productVariant.name }}</h4>
+                    <h4 class="font-bold text-charcoal-900 text-[16px] mb-1 leading-tight">{{ getDisplayName(line) }}</h4>
                     <div class="flex items-center gap-3">
                       <span class="text-[12px] font-bold text-gray-400 capitalize">수량: {{ line.quantity }}개</span>
                       <span class="w-1 h-1 bg-gray-200 rounded-full"></span>
@@ -171,9 +178,48 @@ const formatPrice = (price: number) => {
         </div>
       </template>
     </div>
+    <!-- Login Required Modal -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="showLoginModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <!-- Backdrop -->
+          <div class="absolute inset-0 bg-charcoal-900/60 backdrop-blur-sm" @click="showLoginModal = false"></div>
+          
+          <!-- Modal content -->
+          <div class="relative bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl space-y-8 animate-in zoom-in duration-300">
+            <div class="text-center space-y-4">
+              <div class="w-20 h-20 bg-safety-orange/10 text-safety-orange rounded-full flex items-center justify-center mx-auto mb-4">
+                <Icon name="ph:user-circle-plus-fill" class="text-4xl" />
+              </div>
+              <h2 class="text-2xl font-black text-charcoal-900 tracking-tighter">로그인이 필요합니다</h2>
+              <p class="text-[15px] text-gray-500 leading-relaxed font-medium">
+                서담의 디지털 학습 자료는 구매 후 <span class="text-charcoal-900 font-bold">영구적인 소유권</span>을 보장해 드리기 위해 계정 정보가 필수적입니다.<br />간편 인증 후 결제를 계속해 주세요.
+              </p>
+            </div>
+            
+            <div class="grid gap-3 pt-2">
+              <NuxtLink 
+                :to="`/login?redirect=${$route.fullPath}`"
+                class="h-16 bg-charcoal-900 text-white rounded-2xl flex items-center justify-center font-black text-[16px] hover:bg-safety-orange transition-all duration-300"
+              >
+                로그인 및 가입하기
+              </NuxtLink>
+              <button 
+                @click="showLoginModal = false"
+                class="h-16 bg-charcoal-50 text-gray-400 rounded-2xl flex items-center justify-center font-bold text-[16px] hover:bg-charcoal-100 transition-all"
+              >
+                다음에 할게요
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <style scoped>
 .h-18 { height: 4.5rem; }
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>
