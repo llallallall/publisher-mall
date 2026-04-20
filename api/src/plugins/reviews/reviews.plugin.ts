@@ -17,6 +17,7 @@ import { gql } from 'graphql-tag';
 import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
 import { Injectable } from '@nestjs/common';
 import { RequestContext, TransactionalConnection } from '@vendure/core';
+import path from 'path';
 
 @Entity()
 export class ProductReview extends VendureEntity {
@@ -261,4 +262,25 @@ export class AdminReviewResolver {
         resolvers: [AdminReviewResolver],
     },
 })
-export class SeodamReviewsPlugin {}
+export class SeodamReviewsPlugin {
+    /**
+     * 데브아울스 표준 가이드: UI 익스텐션 정적 설정
+     * 플러그인과 UI의 연결 고리를 정의합니다.
+     */
+    static uiExtensions: any = {
+        id: 'seodam-reviews',
+        extensionPath: path.join(__dirname, '../../../../admin-ui-extensions/reviews-ui'),
+        ngModules: [
+            {
+                type: 'shared',
+                ngModuleFileName: 'reviews-ui.module.ts',
+                ngModuleName: 'ReviewsSharedModule',
+            },
+            {
+                type: 'lazy',
+                ngModuleFileName: 'reviews-ui.module.ts',
+                ngModuleName: 'ReviewsUiModule',
+            },
+        ],
+    };
+}

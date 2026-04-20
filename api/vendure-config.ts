@@ -124,22 +124,14 @@ export const config: VendureConfig = {
             route: 'admin',
             port: +(process.env.ADMIN_PORT || 3003),
             app: compileUiExtensions({
-                outputPath: path.join(__dirname, 'compiled-admin-ui'),
+                outputPath: path.join(__dirname, '../__admin-ui'),
                 extensions: [
+                    SeodamReviewsPlugin.uiExtensions,
                     {
-                        id: 'product-reviews',
-                        extensionPath: path.join(__dirname, '..', 'admin-ui-extensions', 'reviews-ui'),
+                        // 전역 및 익스텐션 한글화를 위한 번역 파일 바인딩
                         translations: {
                             ko: path.join(__dirname, 'ko.json'),
                         },
-                        ngModules: [
-                            {
-                                type: 'lazy' as const,
-                                route: 'product-reviews',
-                                ngModuleFileName: 'reviews-ui.module.ts',
-                                ngModuleName: 'ReviewsUiModule',
-                            },
-                        ],
                     },
                 ],
                 devMode: true,
